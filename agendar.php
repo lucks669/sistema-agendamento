@@ -1,27 +1,38 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "projeto_1"; // se quiser mudar para sistema_agendamento depois, a gente muda
+require 'conexao.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
+// Debug: mostra os dados recebidos
+// Descomente a linha abaixo se quiser ver se os dados chegam
+// var_dump($_POST);
 
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
+$cliente = $_POST['cliente'] ?? '';
+$cidade  = $_POST['cidade'] ?? null;
+$estado  = $_POST['estado'] ?? null;
+$data    = $_POST['data_agendamento'] ?? '';
+$horario = $_POST['horario'] ?? '';
+$servico = $_POST['servico'] ?? '';
+
+// Verifica campos obrigatórios
+if (empty($cliente) || empty($data) || empty($horario) || empty($servico)) {
+    die("Preencha todos os campos obrigatórios.");
 }
 
-$cliente = $_POST['cliente'];
-$cidade = $_POST['cidade'];
-$estado = $_POST['estado'];
-$data = $_POST['data_agendamento'];
-$horario = $_POST['horario'];
+// Inserir cliente
+$sql_cliente = "INSERT INTO clientes (cliente, cidade, estado) VALUES (?, ?, ?)";
+$stmt1 = $conn->prepare($sql_cliente);
+$stmt1->bind_param("sss", $cliente, $cidade, $estado);
+$stmt1->execute();
+$cliente_id = $conn->insert_id;
 
-$sql = "INSERT INTO clientes (cliente, cidade, estado) VALUES ('$cliente', '$cidade', '$estado')";
+// Inserir agendamento
+$sql_agendamento = "INSERT INTO agendamentos (cliente_id, data_agendamento, horario, servico) VALUES (?, ?, ?, ?)";
+$stmt2 = $conn->prepare($sql_agendamento);
+$stmt2->bind_param("isss", $cliente_id, $data, $horario, $servico);
 
-if ($conn->query($sql) === TRUE) {
-    echo "✅ Agendamento salvo com sucesso!";
+if ($stmt2->execute()) {
+    echo "✅ Agendamento realizado com sucesso!";
 } else {
-    echo "Erro: " . $sql . "<br>" . $conn->error;
+    echo "❌ Erro ao agendar: " . $stmt2->error;
 }
 
 $conn->close();

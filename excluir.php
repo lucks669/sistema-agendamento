@@ -1,24 +1,28 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "projeto_1";
+require 'conexao.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
+// Verifica se o ID foi passado
+if (!isset($_GET['id'])) {
+    die("ID do agendamento não informado.");
 }
 
-$id = $_GET['id'];
+$id = (int)$_GET['id'];
 
-$sql = "DELETE FROM clientes WHERE id = $id";
+// Deleta o agendamento pelo ID
+$sql = "DELETE FROM agendamentos WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
 
-if ($conn->query($sql) === TRUE) {
-    header("Location: listar.php");
+if ($stmt->execute()) {
+    echo "✅ Agendamento excluído com sucesso!";
 } else {
-    echo "Erro ao excluir: " . $conn->error;
+    echo "❌ Erro ao excluir: " . $stmt->error;
 }
 
+$stmt->close();
 $conn->close();
+
+// Redireciona de volta para a lista
+header("Location: listar.php");
+exit;
 ?>

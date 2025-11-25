@@ -1,12 +1,14 @@
 <?php
 $host = "localhost";
-$usuario = "root";
-$senha = "";
-$banco = "sistema_agendamento";
+$user = "root";
+$pass = "";
+$db   = "sistema_agendamento";
 
-$conn = new mysqli($host, $usuario, $senha, $banco);
+$conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    die("Erro na conexão: " . $conn->connect_error);
+    die("Erro de conexão: " . $conn->connect_error);
 }
+
+echo "Conexão realizada com sucesso!";
 ?>
