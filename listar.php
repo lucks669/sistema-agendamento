@@ -1,16 +1,7 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "projeto_1";
+include "conexao.php";
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM clientes ORDER BY id DESC";
+$sql = "SELECT * FROM agendamentos ORDER BY data_agendamento, horario";
 $result = $conn->query($sql);
 ?>
 
@@ -18,45 +9,31 @@ $result = $conn->query($sql);
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Agendamentos</title>
+    <title>Lista de Agendamentos</title>
 </head>
 <body>
 
-<h1>Lista de Agendamentos</h1>
+<h1>Agendamentos</h1>
 
-<table border="1" cellpadding="5">
+<table border="1">
     <tr>
-      <th>ID</th>
-      <th>Cliente</th>
-      <th>Cidade</th>
-      <th>Estado</th>
-      <th>Ação</th> 
+        <th>Cliente</th>
+        <th>Cidade</th>
+        <th>Estado</th>
+        <th>Data</th>
+        <th>Horário</th>
     </tr>
 
-    <?php
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>".$row["id"]."</td>";
-            echo "<td>".$row["cliente"]."</td>";
-            echo "<td>".$row["cidade"]."</td>";
-            echo "<td>".$row["estado"]."</td>";
-            echo "<td><a href='excluir.php?id=".$row["id"]."'>Excluir</a></td>";
-            echo "</tr>";
-        }
-    } else {
-        echo "<tr><td colspan='4'>Nenhum agendamento encontrado</td></tr>";
-    }
-    ?>
-
+    <?php while($row = $result->fetch_assoc()): ?>
+        <tr>
+            <td><?= $row['cliente'] ?></td>
+            <td><?= $row['cidade'] ?></td>
+            <td><?= $row['estado'] ?></td>
+            <td><?= $row['data_agendamento'] ?></td>
+            <td><?= $row['horario'] ?></td>
+        </tr>
+    <?php endwhile; ?>
 </table>
-
-<br>
-<a href="index.html">Voltar</a>
 
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
