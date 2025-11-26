@@ -1,23 +1,24 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "projeto_1";
+include 'conexao.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
+// Verifica se o ID foi passado pela URL
+if(isset($_GET['id'])) {
+    $id = intval($_GET['id']); // garante que é um número inteiro
 
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
-}
+    // Prepara a query de exclusão
+    $stmt = $conn->prepare("DELETE FROM clientes WHERE id = ?");
+    $stmt->bind_param("i", $id);
 
-$id = $_GET['id'];
+    // Executa a query
+    if($stmt->execute()) {
+        echo "Agendamento excluído com sucesso!";
+    } else {
+        echo "Erro ao excluir: " . $stmt->error;
+    }
 
-$sql = "DELETE FROM clientes WHERE id = $id";
-
-if ($conn->query($sql) === TRUE) {
-    header("Location: listar.php");
+    $stmt->close();
 } else {
-    echo "Erro ao excluir: " . $conn->error;
+    echo "ID não informado!";
 }
 
 $conn->close();
