@@ -8,34 +8,66 @@
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #4CAF50, #2e7d32);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
             padding: 20px;
         }
         .container {
-            background: #fff; padding: 30px; border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 100%; max-width: 420px;
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            width: 100%; 
+            max-width: 420px;
         }
-        h1 { text-align: center; margin-bottom: 20px; color: #2e7d32; }
-        label { font-weight: bold; display: block; margin-bottom: 6px; color: #333; }
-        input {
-            width: 100%; padding: 10px; margin-bottom: 15px;
-            border: 1px solid #ccc; border-radius: 6px; transition: border-color 0.3s;
+        h1 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            color: #2e7d32; 
         }
-        input:focus { border-color: #4CAF50; outline: none; }
+        label { 
+            font-weight: bold; 
+            display: block; 
+            margin-bottom: 6px; 
+            color: #333; 
+        }
+        input, select {
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 15px;
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            transition: border-color 0.3s;
+            font-size: 14px;
+        }
+        input:focus, select:focus { 
+            border-color: #4CAF50; 
+            outline: none; 
+        }
         button {
-            width: 100%; padding: 12px; background: #4CAF50; color: #fff;
-            border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
+            width: 100%; 
+            padding: 12px; 
+            background: #4CAF50; 
+            color: #fff;
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            cursor: pointer;
             transition: background 0.3s;
         }
         button:hover { background: #388e3c; }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <h1>Sistema de Agendamento</h1>
 
         <form action="agendar.php" method="POST">
+
             <label for="cliente">Nome do cliente:</label>
             <input type="text" id="cliente" name="cliente" required>
 
@@ -51,7 +83,16 @@
             <label for="horario">Horário:</label>
             <input type="time" id="horario" name="horario" required>
 
+            <label for="servico">Serviço:</label>
+            <select id="servico" name="servico" required>
+                <option value="">Selecione um serviço</option>
+                <option value="Corte">Corte</option>
+                <option value="Pintura">Pintura</option>
+                <option value="Manutenção">Manutenção</option>
+            </select>
+
             <button type="submit">Agendar</button>
+
         </form>
     </div>
 
