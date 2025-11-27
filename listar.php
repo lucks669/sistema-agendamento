@@ -1,78 +1,102 @@
 <?php
-require 'conexao.php';
+include("conexao.php");
 
-// Seleciona todos os agendamentos diretamente da tabela
-$sql = "SELECT cliente, cidade, estado, data_agendamento, horario, servico FROM agendamentos ORDER BY data_agendamento, horario";
-$result = $conn->query($sql);
+$sql = "
+SELECT 
+    a.data_agendamento,
+    a.horario,
+    a.servico,
+    c.cliente,
+    c.cidade,
+    c.estado
+FROM agendamentos a
+JOIN clientes c ON a.cliente_id = c.id
+ORDER BY a.data_agendamento DESC, a.horario DESC
+";
+
+$resultado = $conn->query($sql);
 ?>
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Agendamentos</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #4CAF50, #2e7d32);
-        margin: 0;
-        padding: 20px;
-    }
-    h1 { text-align: center; color: #fff; }
-    table {
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
-        border-collapse: collapse;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background: #4CAF50; color: #fff; font-weight: bold; }
-    tr:hover { background: #f1f1f1; }
-    a {
-        display: block;
-        width: 200px;
-        margin: 20px auto;
-        text-align: center;
-        padding: 10px 20px;
-        background: #4CAF50;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 6px;
-        font-weight: bold;
-    }
-    a:hover { background: #388e3c; }
-</style>
+    <meta charset="UTF-8">
+    <title>Lista de Agendamentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e7f5e7;
+        }
+        table {
+            width: 90%;
+            margin: 50px auto;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background: #2e7d32;
+            color: white;
+        }
+        .btn-voltar {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            text-align: center;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-voltar:hover {
+            background: #2e7d32;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Agendamentos</h1>
+<h2 style="text-align:center;">Lista de Agendamentos</h2>
+
+<table>
+    <tr>
+        <th>Cliente</th>
+        <th>Cidade</th>
+        <th>Estado</th>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Serviço</th>
+    </tr>
 
 <?php
-if ($result->num_rows > 0) {
-    echo "<table>";
-    echo "<tr><th>Cliente</th><th>Cidade</th><th>Estado</th><th>Data</th><th>Horário</th><th>Serviço</th></tr>";
-    while($row = $result->fetch_assoc()) {
-        echo "<tr>
-                <td>{$row['cliente']}</td>
-                <td>{$row['cidade']}</td>
-                <td>{$row['estado']}</td>
-                <td>{$row['data_agendamento']}</td>
-                <td>{$row['horario']}</td>
-                <td>{$row['servico']}</td>
-              </tr>";
-    }
-    echo "</table>";
-} else {
-    echo "<p style='text-align:center; color:#fff;'>Nenhum agendamento encontrado.</p>";
-}
+if ($resultado->num_rows > 0) {
+    while($linha = $resultado->fetch_assoc()) {
 
-$conn->close();
+        $data = date("d/m/Y", strtotime($linha['data_agendamento']));
+        $hora = substr($linha['horario'], 0, 5);
+
+        echo "<tr>";
+        echo "<td>{$linha['cliente']}</td>";
+        echo "<td>{$linha['cidade']}</td>";
+        echo "<td>{$linha['estado']}</td>";
+        echo "<td>{$data}</td>";
+        echo "<td>{$hora}</td>";
+        echo "<td>{$linha['servico']}</td>";
+        echo "</tr>";
+    }
+} else {
+    echo "<tr><td colspan='6'>Nenhum agendamento encontrado.</td></tr>";
+}
 ?>
 
-<a href="index.php">Voltar para Agendamento</a>
+</table>
+
+<a class="btn-voltar" href="index.html">Voltar ao formulário</a>
 
 </body>
 </html>
